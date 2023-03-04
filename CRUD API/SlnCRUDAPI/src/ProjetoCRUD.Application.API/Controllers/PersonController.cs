@@ -26,7 +26,7 @@ namespace ProjetoCRUD.Application.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Person>> FindPersonById(int id)
         {
-            Person person = await _context.People.FindAsync();
+            Person person = await _context.People.FindAsync(id);
             if (person == null)
             {
                 return NotFound();
