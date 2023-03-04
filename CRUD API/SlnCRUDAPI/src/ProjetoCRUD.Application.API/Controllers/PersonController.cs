@@ -56,6 +56,10 @@ namespace ProjetoCRUD.Application.API.Controllers
         public async Task<ActionResult> DeletePerson(int id)
         {
             Person person = await _context.People.FindAsync(id);
+            if (person == null)
+            {
+                return NotFound();
+            }
             _context.Remove(person);
             await _context.SaveChangesAsync();
             return Ok();
