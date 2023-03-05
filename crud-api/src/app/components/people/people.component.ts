@@ -29,27 +29,57 @@ export class PeopleComponent implements OnInit {
     this.tableVisibility = false;
     this.formVisibility = true;
     this.titleForm = 'Nova Pessoa',
-    this.form = new FormGroup({
-      name: new FormControl(null),
-      lastName: new FormControl(null),
-      age: new FormControl(null),
-      phone: new FormControl(null),
-      address: new FormControl(null),
-      profession: new FormControl(null),
+      this.form = new FormGroup({
+        name: new FormControl(null),
+        lastName: new FormControl(null),
+        age: new FormControl(null),
+        phone: new FormControl(null),
+        address: new FormControl(null),
+        profession: new FormControl(null),
+      });
+  }
+
+  showFormEdit(id: number): void {
+    this.tableVisibility = false;
+    this.formVisibility = true;
+    this.peopleService.getById(id).subscribe(result => {
+      this.titleForm = `Atualizar ${result.name} ${result.lastName}`;
+      this.form = new FormGroup({
+        id: new FormControl(result.id),
+        name: new FormControl(result.name),
+        lastName: new FormControl(result.lastName),
+        age: new FormControl(result.age),
+        phone: new FormControl(result.phone),
+        address: new FormControl(result.address),
+        profession: new FormControl(result.profession),
+      });
     });
   }
 
   sendForm(): void {
     const person: Person = this.form.value;
 
-    this.peopleService.savePerson(person).subscribe((result) => {
-      this.formVisibility = false;
-      this.tableVisibility = true;
-      alert('Pessoa cadastrada com sucesso');
-      this.peopleService.getAll().subscribe(result => {
-        this.people = result;
+    if (person.id > 0) {
+      this.peopleService.updatePerson(person).subscribe(result => {
+        this.formVisibility = false;
+        this.tableVisibility = true;
+        alert('Pessoa atualizada com sucesso');
+        this.peopleService.getAll().subscribe(result => {
+          this.people = result;
+        });
       });
-    });
+    }
+    else {
+      this.peopleService.savePerson(person).subscribe((result) => {
+        this.formVisibility = false;
+        this.tableVisibility = true;
+        alert('Pessoa cadastrada com sucesso');
+        this.peopleService.getAll().subscribe(result => {
+          this.people = result;
+        });
+      });
+    }
+
   }
 
   goToBack(): void {
