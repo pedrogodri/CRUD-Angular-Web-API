@@ -27,7 +27,7 @@
         <td> {{ person.profession }} </td>
         <td>
           <button type="button" class="btn btn-sm btn-outline-info" (click)="showFormEdit(person.id)">Editar</button>
-          <button type="button" class="btn btn-sm btn-outline-danger">Excluir</button>
+          <button type="button" class="btn btn-sm btn-outline-danger" (click)="showConfirmationDelete(person.id, person.name, contentModal)">Excluir</button>
         </td>
       </tr>
     </table>
@@ -83,3 +83,20 @@
     </div>
   </div>
 </div>
+
+<ng-template #contentModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Confirmar exclusão</h4>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="modalRef?.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Continuar com a exclusão do(a) {{ name }}
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modalRef?.hide()">Não</button>
+    <button type="button" class="btn btn-light" (click)="deletePerson(id)">Sim</button>
+  </div>
+</ng-template>

@@ -1,7 +1,8 @@
 import { PeopleService } from './../../services/people.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Person } from 'src/app/person/person';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-people',
@@ -13,10 +14,16 @@ export class PeopleComponent implements OnInit {
   form: any;
   titleForm?: string;
   people?: Person[];
+  name?: string;
+  id?: number;
+
   tableVisibility?: boolean = true;
   formVisibility?: boolean = false;
 
-  constructor(private peopleService: PeopleService) { }
+  modalRef?: BsModalRef;
+
+  constructor(private peopleService: PeopleService,
+              private mdoalService: BsModalService) { }
 
   ngOnInit(): void {
     this.peopleService.getAll().subscribe(result => {
@@ -64,8 +71,8 @@ export class PeopleComponent implements OnInit {
         this.formVisibility = false;
         this.tableVisibility = true;
         alert('Pessoa atualizada com sucesso');
-        this.peopleService.getAll().subscribe(result => {
-          this.people = result;
+        this.peopleService.getAll().subscribe(register => {
+          this.people = register;
         });
       });
     }
@@ -74,8 +81,8 @@ export class PeopleComponent implements OnInit {
         this.formVisibility = false;
         this.tableVisibility = true;
         alert('Pessoa cadastrada com sucesso');
-        this.peopleService.getAll().subscribe(result => {
-          this.people = result;
+        this.peopleService.getAll().subscribe(register => {
+          this.people = register;
         });
       });
     }
@@ -87,4 +94,20 @@ export class PeopleComponent implements OnInit {
     this.formVisibility = false;
   }
 
+
+  showConfirmationDelete(id: number, name: any, concontentModal: TemplateRef<any>): void {
+    this.modalRef = this.mdoalService.show(concontentModal);
+    this.id = id;
+    this.name = name;
+  }
+
+  deletePerson(id: any) {
+    this.peopleService.deletePerson(id).subscribe(result => {
+      this.modalRef?.hide();
+      alert('Pessoa excluída com sucesso');
+      this.peopleService.getAll().subscribe(register => {
+        this.people = register;
+      });
+    })
+  }
 }
